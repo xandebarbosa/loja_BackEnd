@@ -5,6 +5,25 @@ const jwt = require("jsonwebtoken");
 
 const tabelaUsuario = models.Usuario;
 
+exports.autenticado = async (req, res) => {
+  
+  const token = req.headers.authorization.split(" ")[1];
+  //metodo Split pega o texto e coloca dentro de um array, alem disso esse metodo permite a divisão da informação por aspas
+  
+  const decoded = jwt.decode(token); //decode metodo para descriptografar 
+  
+  if( decoded && decoded.id){
+    
+    const usuario = await tabelaUsuario.findOne({ where: { id: decoded.id}});
+    return res.json(usuario);
+  }
+
+  return res.json({
+    error: true,
+    message: "Usuário não autenticado"
+  });
+}
+
 exports.login = async (req, res) => {
 
   try {
@@ -12,24 +31,22 @@ exports.login = async (req, res) => {
     const login = req.body.login;
     const senha = req.body.senha;
 
-    const existeUsuario1 = await tabelaUsuario.findOne({ where: { login: login, senha: senha}});
-    //const existeUsuario2 = tabelaUsuario.findAll({ attributes: [login == login && senha == senha]})
-
-    if(!existeUsuario1){
+    const existeUsuario = await tabelaUsuario.findOne({ where: { login: login, senha: senha}});
+    
+    if(!existeUsuario){
 
       return res.json({
-      message: "Usuário não existe",
+        error: true,
+        message: "Usuário não existe",
       });
     }
 
-     const token = jwt.sign({ foo: 'Alexandre', cidade: 'Bauru'},
-     process.env.JWT_SECRET,
+     const token = jwt.sign({ id: existeUsuario.id }, process.env.JWT_SECRET, // metodo sign cria o Token, será gravado o id do usuario
      {
-       expiresIn: '1m',
-     }
-     );
+       expiresIn: '8h',
+     });
 
-     return res.json({ token: token });
+     return res.json({ token: token, user: existeUsuario });
 
   } catch (error){
     return res.json({
@@ -60,7 +77,12 @@ exports.criar = async (req, res) => {
       login: req.body.usuario,
       senha: req.body.senha,
     });
-     return res.json({ mensagem: "Usuario criado com sucesso!!" });
+
+    const token = jwt.sign({ id: novoUsuario.id }, process.env.JWT_SECRET, // metodo sign cria o Token, será gravado o id do usuario
+      {
+        expiresIn: '8h',
+      });
+     return res.json({ token: token, user: novoUsuario});
 
   } catch (error) {
       return res.json({

@@ -16,6 +16,13 @@ module.exports = {
           key: "id",
         },
       },
+      categoriaId:{
+        type: Sequelize.INTEGER,
+        references:{
+          model: "categoria",
+          key: "id",
+        },
+      },
       nome: {
         type: Sequelize.STRING,
         allowNull: false,  //permitir nulo - preenchimento do campo é obrigatório
@@ -24,7 +31,6 @@ module.exports = {
             msg: 'Por favor digite o nome do produto'
           },
         },
-        unique: true,
       },
       quantidade: {
         type: Sequelize.INTEGER,

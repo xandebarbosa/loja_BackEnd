@@ -22,6 +22,7 @@ module.exports = {
           key: "id",
         },
       },
+      quantidade: Sequelize.INTEGER,
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE,
     });

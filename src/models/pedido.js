@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         valor: DataTypes.INTEGER,
         status: DataTypes.STRING,
+        forma_pagamento: DataTypes.STRING,
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
       },
@@ -26,8 +27,13 @@ module.exports = (sequelize, DataTypes) => {
       Pedido.belongsToMany(models.Produto, {
           foreignKey: 'pedidoId',
           as: 'produtos',
-          through: 'pedido_produto'
-      })
+          through: models.pedido_produto
+      });
+
+      Pedido.hasOne(models.dados_cartao, {
+        foreignKey: 'pedidoId',
+        as: "dados_cartao",
+      });
      };
   
     return Pedido;

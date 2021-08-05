@@ -16,7 +16,6 @@ module.exports = {
             msg: 'Por favor digite o nome do Fornecedor'
           },
         },
-        unique: true,
       },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE,

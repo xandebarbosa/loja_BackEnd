@@ -24,7 +24,7 @@ module.exports = {
         type: Sequelize.STRING,
         defaultValue: 'Processando..',
       },
-      
+      forma_pagamento: Sequelize.STRING,
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE,
     });
